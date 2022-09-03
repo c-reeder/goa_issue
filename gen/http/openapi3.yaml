@@ -1,0 +1,108 @@
+openapi: 3.0.3
+info:
+    title: Calculator Service
+    description: Service for multiplying numbers, a Goa teaser
+    version: "1.0"
+servers:
+    - url: http://localhost:80
+paths:
+    /{id}:
+        patch:
+            tags:
+                - TestService
+            summary: update TestService
+            description: Update an existing workspace information
+            operationId: TestService#update
+            parameters:
+                - name: id
+                  in: path
+                  description: Workspace ID
+                  required: true
+                  schema:
+                    type: string
+                    description: Workspace ID
+                    example: Repellendus asperiores non veritatis tenetur.
+                  example: Sed officiis non culpa dolores et.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateRequestBody'
+                        example:
+                            description: Non et.
+                            destination_ids:
+                                - Itaque sit corrupti.
+                                - Ad iusto.
+                                - Sed repudiandae molestiae modi quo.
+                                - Et eum aut adipisci temporibus.
+                            logo_url: Et consequatur.
+                            name: Alias incidunt.
+            responses:
+                "204":
+                    description: No Content response.
+        put:
+            tags:
+                - TestService
+            summary: set TestService
+            description: Set the workspace to be used
+            operationId: TestService#set
+            parameters:
+                - name: id
+                  in: path
+                  description: Workspace ID
+                  required: true
+                  schema:
+                    type: string
+                    description: Workspace ID
+                    example: Nemo eligendi officiis.
+                  example: Nulla vitae culpa ullam autem.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateRequestBody'
+                        example:
+                            description: Labore eaque consectetur.
+                            destination_ids:
+                                - Omnis veritatis id iure repellat.
+                                - Culpa odit.
+                                - Odit non.
+                            logo_url: Et facere aperiam ut rerum ipsam.
+                            name: Quibusdam eius.
+            responses:
+                "204":
+                    description: No Content response.
+components:
+    schemas:
+        UpdateRequestBody:
+            type: object
+            properties:
+                description:
+                    type: string
+                    example: Ipsum nostrum cumque deserunt labore hic rerum.
+                destination_ids:
+                    type: array
+                    items:
+                        type: string
+                        example: Dolores voluptas suscipit ut rerum odio.
+                    example:
+                        - Nihil et nobis quo.
+                        - Magni ex sint dolor quo.
+                logo_url:
+                    type: string
+                    example: Voluptas excepturi beatae qui.
+                name:
+                    type: string
+                    example: Dolore qui consequuntur qui dolor.
+            example:
+                description: Odit temporibus ut.
+                destination_ids:
+                    - Sed fuga eos dolore et ullam qui.
+                    - Consequatur sapiente aut unde.
+                logo_url: Et et repellat quis blanditiis.
+                name: Dolor sed ratione aliquam quia.
+tags:
+    - name: TestService
+      description: The calc service performs operations on numbers.
