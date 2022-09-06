@@ -21,8 +21,8 @@ paths:
                   schema:
                     type: string
                     description: Workspace ID
-                    example: Repellendus asperiores non veritatis tenetur.
-                  example: Sed officiis non culpa dolores et.
+                    example: Excepturi blanditiis mollitia eos quas.
+                  example: Enim dolor.
             requestBody:
                 required: true
                 content:
@@ -30,14 +30,12 @@ paths:
                         schema:
                             $ref: '#/components/schemas/UpdateRequestBody'
                         example:
-                            description: Non et.
+                            description: Quibusdam eius.
                             destination_ids:
-                                - Itaque sit corrupti.
-                                - Ad iusto.
-                                - Sed repudiandae molestiae modi quo.
-                                - Et eum aut adipisci temporibus.
-                            logo_url: Et consequatur.
-                            name: Alias incidunt.
+                                - Eaque consectetur excepturi eaque.
+                                - Veritatis id iure.
+                            logo_url: Accusantium culpa odit eaque.
+                            name: Quasi est eum ad.
             responses:
                 "204":
                     description: No Content response.
@@ -55,8 +53,8 @@ paths:
                   schema:
                     type: string
                     description: Workspace ID
-                    example: Nemo eligendi officiis.
-                  example: Nulla vitae culpa ullam autem.
+                    example: Ut corporis nihil.
+                  example: Eveniet et ipsa nihil.
             requestBody:
                 required: true
                 content:
@@ -64,13 +62,14 @@ paths:
                         schema:
                             $ref: '#/components/schemas/UpdateRequestBody'
                         example:
-                            description: Labore eaque consectetur.
+                            description: Mollitia et quis consectetur.
                             destination_ids:
-                                - Omnis veritatis id iure repellat.
-                                - Culpa odit.
-                                - Odit non.
-                            logo_url: Et facere aperiam ut rerum ipsam.
-                            name: Quibusdam eius.
+                                - Neque consequatur maiores aut.
+                                - Et consequatur quis dolorum corporis officiis rerum.
+                                - Quia dolores consequatur cum itaque.
+                                - Nam deserunt et tempora atque.
+                            logo_url: Ea ut enim aut.
+                            name: Omnis velit laboriosam unde omnis incidunt.
             responses:
                 "204":
                     description: No Content response.
@@ -81,28 +80,28 @@ components:
             properties:
                 description:
                     type: string
-                    example: Ipsum nostrum cumque deserunt labore hic rerum.
+                    example: Est repellendus asperiores non veritatis tenetur qui.
                 destination_ids:
                     type: array
                     items:
                         type: string
-                        example: Dolores voluptas suscipit ut rerum odio.
+                        example: Officiis non culpa dolores.
                     example:
-                        - Nihil et nobis quo.
-                        - Magni ex sint dolor quo.
+                        - Nemo eligendi officiis.
+                        - Nulla vitae culpa ullam autem.
                 logo_url:
                     type: string
-                    example: Voluptas excepturi beatae qui.
+                    example: Est harum dolor error.
                 name:
                     type: string
-                    example: Dolore qui consequuntur qui dolor.
+                    example: Et repellat quis.
             example:
-                description: Odit temporibus ut.
+                description: Corporis fuga fuga a.
                 destination_ids:
-                    - Sed fuga eos dolore et ullam qui.
-                    - Consequatur sapiente aut unde.
-                logo_url: Et et repellat quis blanditiis.
-                name: Dolor sed ratione aliquam quia.
+                    - Aperiam accusamus.
+                    - Fugiat esse quisquam quod earum eum.
+                logo_url: Dolores repellat occaecati tempore assumenda repellendus.
+                name: Accusantium animi at quis quae.
 tags:
     - name: TestService
       description: The calc service performs operations on numbers.
