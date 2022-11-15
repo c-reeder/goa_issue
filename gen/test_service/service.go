@@ -9,14 +9,14 @@ package testservice
 
 import (
 	"context"
+
+	types "example.com/goa_issue/gen/types"
 )
 
 // The calc service performs operations on numbers.
 type Service interface {
-	// Update an existing workspace information
-	Update(context.Context, *WorkspaceUpdatePayload) (err error)
-	// Set the workspace to be used
-	Set(context.Context, *Workspace) (err error)
+	// Create a new thing
+	Create(context.Context, *types.FirstType) (err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -27,25 +27,8 @@ const ServiceName = "TestService"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [2]string{"update", "set"}
+var MethodNames = [1]string{"create"}
 
-// Workspace is the payload type of the TestService service set method.
-type Workspace struct {
-	// Workspace ID
-	ID             *string
-	Name           *string
-	Description    *string
-	DestinationIds []string
-	LogoURL        *string
-}
-
-// WorkspaceUpdatePayload is the payload type of the TestService service update
-// method.
-type WorkspaceUpdatePayload struct {
-	// Workspace ID
-	ID             string
-	Name           *string
-	Description    *string
-	DestinationIds []string
-	LogoURL        *string
+type SecondType struct {
+	Description *string
 }

@@ -12,25 +12,26 @@ import (
 	"io"
 	"net/http"
 
+	types "example.com/goa_issue/gen/types"
 	goahttp "goa.design/goa/v3/http"
 	goa "goa.design/goa/v3/pkg"
 )
 
-// EncodeUpdateResponse returns an encoder for responses returned by the
-// TestService update endpoint.
-func EncodeUpdateResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
+// EncodeCreateResponse returns an encoder for responses returned by the
+// TestService create endpoint.
+func EncodeCreateResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
 		w.WriteHeader(http.StatusNoContent)
 		return nil
 	}
 }
 
-// DecodeUpdateRequest returns a decoder for requests sent to the TestService
-// update endpoint.
-func DecodeUpdateRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
+// DecodeCreateRequest returns a decoder for requests sent to the TestService
+// create endpoint.
+func DecodeCreateRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
 	return func(r *http.Request) (interface{}, error) {
 		var (
-			body UpdateRequestBody
+			body CreateRequestBody
 			err  error
 		)
 		err = decoder(r).Decode(&body)
@@ -40,52 +41,21 @@ func DecodeUpdateRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.
 			}
 			return nil, goa.DecodePayloadError(err.Error())
 		}
-
-		var (
-			id string
-
-			params = mux.Vars(r)
-		)
-		id = params["id"]
-		payload := NewUpdateWorkspaceUpdatePayload(&body, id)
+		payload := NewCreateFirstType(&body)
 
 		return payload, nil
 	}
 }
 
-// EncodeSetResponse returns an encoder for responses returned by the
-// TestService set endpoint.
-func EncodeSetResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
-	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		w.WriteHeader(http.StatusNoContent)
+// unmarshalSecondTypeRequestBodyToTypesSecondType builds a value of type
+// *types.SecondType from a value of type *SecondTypeRequestBody.
+func unmarshalSecondTypeRequestBodyToTypesSecondType(v *SecondTypeRequestBody) *types.SecondType {
+	if v == nil {
 		return nil
 	}
-}
-
-// DecodeSetRequest returns a decoder for requests sent to the TestService set
-// endpoint.
-func DecodeSetRequest(mux goahttp.Muxer, decoder func(*http.Request) goahttp.Decoder) func(*http.Request) (interface{}, error) {
-	return func(r *http.Request) (interface{}, error) {
-		var (
-			body SetRequestBody
-			err  error
-		)
-		err = decoder(r).Decode(&body)
-		if err != nil {
-			if err == io.EOF {
-				return nil, goa.MissingPayloadError()
-			}
-			return nil, goa.DecodePayloadError(err.Error())
-		}
-
-		var (
-			id string
-
-			params = mux.Vars(r)
-		)
-		id = params["id"]
-		payload := NewSetWorkspace(&body, id)
-
-		return payload, nil
+	res := &types.SecondType{
+		Description: v.Description,
 	}
+
+	return res
 }

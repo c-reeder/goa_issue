@@ -19,8 +19,7 @@ import (
 // Server lists the TestService service endpoint HTTP handlers.
 type Server struct {
 	Mounts []*MountPoint
-	Update http.Handler
-	Set    http.Handler
+	Create http.Handler
 }
 
 // MountPoint holds information about the mounted endpoints.
@@ -50,11 +49,9 @@ func New(
 ) *Server {
 	return &Server{
 		Mounts: []*MountPoint{
-			{"Update", "PATCH", "/{id}"},
-			{"Set", "PUT", "/{id}"},
+			{"Create", "POST", "/"},
 		},
-		Update: NewUpdateHandler(e.Update, mux, decoder, encoder, errhandler, formatter),
-		Set:    NewSetHandler(e.Set, mux, decoder, encoder, errhandler, formatter),
+		Create: NewCreateHandler(e.Create, mux, decoder, encoder, errhandler, formatter),
 	}
 }
 
@@ -63,8 +60,7 @@ func (s *Server) Service() string { return "TestService" }
 
 // Use wraps the server handlers with the given middleware.
 func (s *Server) Use(m func(http.Handler) http.Handler) {
-	s.Update = m(s.Update)
-	s.Set = m(s.Set)
+	s.Create = m(s.Create)
 }
 
 // MethodNames returns the methods served.
@@ -72,8 +68,7 @@ func (s *Server) MethodNames() []string { return testservice.MethodNames[:] }
 
 // Mount configures the mux to serve the TestService endpoints.
 func Mount(mux goahttp.Muxer, h *Server) {
-	MountUpdateHandler(mux, h.Update)
-	MountSetHandler(mux, h.Set)
+	MountCreateHandler(mux, h.Create)
 }
 
 // Mount configures the mux to serve the TestService endpoints.
@@ -81,21 +76,21 @@ func (s *Server) Mount(mux goahttp.Muxer) {
 	Mount(mux, s)
 }
 
-// MountUpdateHandler configures the mux to serve the "TestService" service
-// "update" endpoint.
-func MountUpdateHandler(mux goahttp.Muxer, h http.Handler) {
+// MountCreateHandler configures the mux to serve the "TestService" service
+// "create" endpoint.
+func MountCreateHandler(mux goahttp.Muxer, h http.Handler) {
 	f, ok := h.(http.HandlerFunc)
 	if !ok {
 		f = func(w http.ResponseWriter, r *http.Request) {
 			h.ServeHTTP(w, r)
 		}
 	}
-	mux.Handle("PATCH", "/{id}", f)
+	mux.Handle("POST", "/", f)
 }
 
-// NewUpdateHandler creates a HTTP handler which loads the HTTP request and
-// calls the "TestService" service "update" endpoint.
-func NewUpdateHandler(
+// NewCreateHandler creates a HTTP handler which loads the HTTP request and
+// calls the "TestService" service "create" endpoint.
+func NewCreateHandler(
 	endpoint goa.Endpoint,
 	mux goahttp.Muxer,
 	decoder func(*http.Request) goahttp.Decoder,
@@ -104,64 +99,13 @@ func NewUpdateHandler(
 	formatter func(ctx context.Context, err error) goahttp.Statuser,
 ) http.Handler {
 	var (
-		decodeRequest  = DecodeUpdateRequest(mux, decoder)
-		encodeResponse = EncodeUpdateResponse(encoder)
+		decodeRequest  = DecodeCreateRequest(mux, decoder)
+		encodeResponse = EncodeCreateResponse(encoder)
 		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
 	)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "update")
-		ctx = context.WithValue(ctx, goa.ServiceKey, "TestService")
-		payload, err := decodeRequest(r)
-		if err != nil {
-			if err := encodeError(ctx, w, err); err != nil {
-				errhandler(ctx, w, err)
-			}
-			return
-		}
-		res, err := endpoint(ctx, payload)
-		if err != nil {
-			if err := encodeError(ctx, w, err); err != nil {
-				errhandler(ctx, w, err)
-			}
-			return
-		}
-		if err := encodeResponse(ctx, w, res); err != nil {
-			errhandler(ctx, w, err)
-		}
-	})
-}
-
-// MountSetHandler configures the mux to serve the "TestService" service "set"
-// endpoint.
-func MountSetHandler(mux goahttp.Muxer, h http.Handler) {
-	f, ok := h.(http.HandlerFunc)
-	if !ok {
-		f = func(w http.ResponseWriter, r *http.Request) {
-			h.ServeHTTP(w, r)
-		}
-	}
-	mux.Handle("PUT", "/{id}", f)
-}
-
-// NewSetHandler creates a HTTP handler which loads the HTTP request and calls
-// the "TestService" service "set" endpoint.
-func NewSetHandler(
-	endpoint goa.Endpoint,
-	mux goahttp.Muxer,
-	decoder func(*http.Request) goahttp.Decoder,
-	encoder func(context.Context, http.ResponseWriter) goahttp.Encoder,
-	errhandler func(context.Context, http.ResponseWriter, error),
-	formatter func(ctx context.Context, err error) goahttp.Statuser,
-) http.Handler {
-	var (
-		decodeRequest  = DecodeSetRequest(mux, decoder)
-		encodeResponse = EncodeSetResponse(encoder)
-		encodeError    = goahttp.ErrorEncoder(encoder, formatter)
-	)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.WithValue(r.Context(), goahttp.AcceptTypeKey, r.Header.Get("Accept"))
-		ctx = context.WithValue(ctx, goa.MethodKey, "set")
+		ctx = context.WithValue(ctx, goa.MethodKey, "create")
 		ctx = context.WithValue(ctx, goa.ServiceKey, "TestService")
 		payload, err := decodeRequest(r)
 		if err != nil {

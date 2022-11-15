@@ -4,10 +4,10 @@ import (
 	. "goa.design/goa/v3/dsl"
 )
 
-var _ = API("calc", func() {
-	Title("Calculator Service")
-	Description("Service for multiplying numbers, a Goa teaser")
-	Server("calc", func() {
+var _ = API("TestAPI", func() {
+	Title("My Test API")
+	Description("API for testing goa stuff")
+	Server("TestServer", func() {
 		Services("TestService")
 	})
 })
@@ -15,31 +15,24 @@ var _ = API("calc", func() {
 var _ = Service("TestService", func() {
 	Description("The calc service performs operations on numbers.")
 
-	Method("update", func() {
-		Description("Update an existing workspace information")
-		Payload(Workspace, func() {
-			Required("id")
-		})
+	Method("create", func() {
+		Description("Create a new thing")
+		Payload(FirstType)
 
 		HTTP(func() {
-			PATCH("/{id}")
-		})
-	})
-
-	Method("set", func() {
-		Description("Set the workspace to be used")
-		Payload(Workspace)
-
-		HTTP(func() {
-			PUT("/{id}")
+			POST("")
 		})
 	})
 
 })
-var Workspace = Type("workspace", func() {
-	Attribute("id", String, "Workspace ID")
+var FirstType = Type("FirstType", func() {
+	Meta("struct:pkg:path", "types")
+	Attribute("id", String)
 	Attribute("name", String)
 	Attribute("description", String)
-	Attribute("destination_ids", ArrayOf(String))
-	Attribute("logo_url", String)
+	Attribute("thing", SecondType)
+})
+
+var SecondType = Type("SecondType", func() {
+	Attribute("Description", String)
 })

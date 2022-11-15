@@ -6,9 +6,11 @@ import (
 
 	_ "goa.design/goa/v3/codegen/generator"
 
+	goahttp "goa.design/goa/v3/http"
+
 	"example.com/goa_issue/gen/http/test_service/server"
 	testservice "example.com/goa_issue/gen/test_service"
-	goahttp "goa.design/goa/v3/http"
+	"example.com/goa_issue/gen/types"
 )
 
 var _ testservice.Service = (*Service)(nil)
@@ -16,25 +18,10 @@ var _ testservice.Service = (*Service)(nil)
 type Service struct {
 }
 
-// Set implements testservice.Service
-func (*Service) Set(context.Context, *testservice.Workspace) (err error) {
-	panic("unimplemented")
+func (s Service) Create(ctx context.Context, firstType *types.FirstType) (err error) {
+	//TODO implement me
+	panic("implement me")
 }
-
-// Update implements testservice.Service
-func (*Service) Update(context.Context, *testservice.WorkspaceUpdatePayload) (err error) {
-	panic("unimplemented")
-}
-
-//Update implements testservice.Service
-//func (*Service) Update(ctx context.Context, payload *testservice.Workspace) (err error) {
-//return fmt.Errorf("Incoming ID: %s", payload.ID)
-//}
-
-//Set implements testservice.Service
-//func (*Service) Set(ctx context.Context, payload *testservice.Workspace) (err error) {
-//return fmt.Errorf("Incoming ID: %s", payload.ID)
-//}
 
 func main() {
 	s := &Service{}

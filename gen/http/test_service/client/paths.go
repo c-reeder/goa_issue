@@ -7,16 +7,7 @@
 
 package client
 
-import (
-	"fmt"
-)
-
-// UpdateTestServicePath returns the URL path to the TestService service update HTTP endpoint.
-func UpdateTestServicePath(id string) string {
-	return fmt.Sprintf("/%v", id)
-}
-
-// SetTestServicePath returns the URL path to the TestService service set HTTP endpoint.
-func SetTestServicePath(id string) string {
-	return fmt.Sprintf("/%v", id)
+// CreateTestServicePath returns the URL path to the TestService service create HTTP endpoint.
+func CreateTestServicePath() string {
+	return "/"
 }

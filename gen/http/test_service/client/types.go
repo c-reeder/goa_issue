@@ -8,57 +8,33 @@
 package client
 
 import (
-	testservice "example.com/goa_issue/gen/test_service"
+	types "example.com/goa_issue/gen/types"
 )
 
-// UpdateRequestBody is the type of the "TestService" service "update" endpoint
+// CreateRequestBody is the type of the "TestService" service "create" endpoint
 // HTTP request body.
-type UpdateRequestBody struct {
-	Name           *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description    *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	DestinationIds []string `form:"destination_ids,omitempty" json:"destination_ids,omitempty" xml:"destination_ids,omitempty"`
-	LogoURL        *string  `form:"logo_url,omitempty" json:"logo_url,omitempty" xml:"logo_url,omitempty"`
+type CreateRequestBody struct {
+	ID          *string                `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
+	Name        *string                `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
+	Description *string                `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
+	Thing       *SecondTypeRequestBody `form:"thing,omitempty" json:"thing,omitempty" xml:"thing,omitempty"`
 }
 
-// SetRequestBody is the type of the "TestService" service "set" endpoint HTTP
-// request body.
-type SetRequestBody struct {
-	Name           *string  `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-	Description    *string  `form:"description,omitempty" json:"description,omitempty" xml:"description,omitempty"`
-	DestinationIds []string `form:"destination_ids,omitempty" json:"destination_ids,omitempty" xml:"destination_ids,omitempty"`
-	LogoURL        *string  `form:"logo_url,omitempty" json:"logo_url,omitempty" xml:"logo_url,omitempty"`
+// SecondTypeRequestBody is used to define fields on request body types.
+type SecondTypeRequestBody struct {
+	Description *string `form:"Description,omitempty" json:"Description,omitempty" xml:"Description,omitempty"`
 }
 
-// NewUpdateRequestBody builds the HTTP request body from the payload of the
-// "update" endpoint of the "TestService" service.
-func NewUpdateRequestBody(p *testservice.WorkspaceUpdatePayload) *UpdateRequestBody {
-	body := &UpdateRequestBody{
+// NewCreateRequestBody builds the HTTP request body from the payload of the
+// "create" endpoint of the "TestService" service.
+func NewCreateRequestBody(p *types.FirstType) *CreateRequestBody {
+	body := &CreateRequestBody{
+		ID:          p.ID,
 		Name:        p.Name,
 		Description: p.Description,
-		LogoURL:     p.LogoURL,
 	}
-	if p.DestinationIds != nil {
-		body.DestinationIds = make([]string, len(p.DestinationIds))
-		for i, val := range p.DestinationIds {
-			body.DestinationIds[i] = val
-		}
-	}
-	return body
-}
-
-// NewSetRequestBody builds the HTTP request body from the payload of the "set"
-// endpoint of the "TestService" service.
-func NewSetRequestBody(p *testservice.Workspace) *SetRequestBody {
-	body := &SetRequestBody{
-		Name:        p.Name,
-		Description: p.Description,
-		LogoURL:     p.LogoURL,
-	}
-	if p.DestinationIds != nil {
-		body.DestinationIds = make([]string, len(p.DestinationIds))
-		for i, val := range p.DestinationIds {
-			body.DestinationIds[i] = val
-		}
+	if p.Thing != nil {
+		body.Thing = marshalTypesSecondTypeToSecondTypeRequestBody(p.Thing)
 	}
 	return body
 }

@@ -10,31 +10,24 @@ package testservice
 import (
 	"context"
 
+	types "example.com/goa_issue/gen/types"
 	goa "goa.design/goa/v3/pkg"
 )
 
 // Client is the "TestService" service client.
 type Client struct {
-	UpdateEndpoint goa.Endpoint
-	SetEndpoint    goa.Endpoint
+	CreateEndpoint goa.Endpoint
 }
 
 // NewClient initializes a "TestService" service client given the endpoints.
-func NewClient(update, set goa.Endpoint) *Client {
+func NewClient(create goa.Endpoint) *Client {
 	return &Client{
-		UpdateEndpoint: update,
-		SetEndpoint:    set,
+		CreateEndpoint: create,
 	}
 }
 
-// Update calls the "update" endpoint of the "TestService" service.
-func (c *Client) Update(ctx context.Context, p *WorkspaceUpdatePayload) (err error) {
-	_, err = c.UpdateEndpoint(ctx, p)
-	return
-}
-
-// Set calls the "set" endpoint of the "TestService" service.
-func (c *Client) Set(ctx context.Context, p *Workspace) (err error) {
-	_, err = c.SetEndpoint(ctx, p)
+// Create calls the "create" endpoint of the "TestService" service.
+func (c *Client) Create(ctx context.Context, p *types.FirstType) (err error) {
+	_, err = c.CreateEndpoint(ctx, p)
 	return
 }

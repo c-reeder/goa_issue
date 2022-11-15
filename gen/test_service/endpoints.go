@@ -10,43 +10,32 @@ package testservice
 import (
 	"context"
 
+	types "example.com/goa_issue/gen/types"
 	goa "goa.design/goa/v3/pkg"
 )
 
 // Endpoints wraps the "TestService" service endpoints.
 type Endpoints struct {
-	Update goa.Endpoint
-	Set    goa.Endpoint
+	Create goa.Endpoint
 }
 
 // NewEndpoints wraps the methods of the "TestService" service with endpoints.
 func NewEndpoints(s Service) *Endpoints {
 	return &Endpoints{
-		Update: NewUpdateEndpoint(s),
-		Set:    NewSetEndpoint(s),
+		Create: NewCreateEndpoint(s),
 	}
 }
 
 // Use applies the given middleware to all the "TestService" service endpoints.
 func (e *Endpoints) Use(m func(goa.Endpoint) goa.Endpoint) {
-	e.Update = m(e.Update)
-	e.Set = m(e.Set)
+	e.Create = m(e.Create)
 }
 
-// NewUpdateEndpoint returns an endpoint function that calls the method
-// "update" of service "TestService".
-func NewUpdateEndpoint(s Service) goa.Endpoint {
+// NewCreateEndpoint returns an endpoint function that calls the method
+// "create" of service "TestService".
+func NewCreateEndpoint(s Service) goa.Endpoint {
 	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(*WorkspaceUpdatePayload)
-		return nil, s.Update(ctx, p)
-	}
-}
-
-// NewSetEndpoint returns an endpoint function that calls the method "set" of
-// service "TestService".
-func NewSetEndpoint(s Service) goa.Endpoint {
-	return func(ctx context.Context, req interface{}) (interface{}, error) {
-		p := req.(*Workspace)
-		return nil, s.Set(ctx, p)
+		p := req.(*types.FirstType)
+		return nil, s.Create(ctx, p)
 	}
 }

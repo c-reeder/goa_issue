@@ -14,27 +14,17 @@ import (
 	"net/http"
 	"net/url"
 
-	testservice "example.com/goa_issue/gen/test_service"
+	types "example.com/goa_issue/gen/types"
 	goahttp "goa.design/goa/v3/http"
 )
 
-// BuildUpdateRequest instantiates a HTTP request object with method and path
-// set to call the "TestService" service "update" endpoint
-func (c *Client) BuildUpdateRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	var (
-		id string
-	)
-	{
-		p, ok := v.(*testservice.WorkspaceUpdatePayload)
-		if !ok {
-			return nil, goahttp.ErrInvalidType("TestService", "update", "*testservice.WorkspaceUpdatePayload", v)
-		}
-		id = p.ID
-	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: UpdateTestServicePath(id)}
-	req, err := http.NewRequest("PATCH", u.String(), nil)
+// BuildCreateRequest instantiates a HTTP request object with method and path
+// set to call the "TestService" service "create" endpoint
+func (c *Client) BuildCreateRequest(ctx context.Context, v interface{}) (*http.Request, error) {
+	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: CreateTestServicePath()}
+	req, err := http.NewRequest("POST", u.String(), nil)
 	if err != nil {
-		return nil, goahttp.ErrInvalidURL("TestService", "update", u.String(), err)
+		return nil, goahttp.ErrInvalidURL("TestService", "create", u.String(), err)
 	}
 	if ctx != nil {
 		req = req.WithContext(ctx)
@@ -43,26 +33,26 @@ func (c *Client) BuildUpdateRequest(ctx context.Context, v interface{}) (*http.R
 	return req, nil
 }
 
-// EncodeUpdateRequest returns an encoder for requests sent to the TestService
-// update server.
-func EncodeUpdateRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
+// EncodeCreateRequest returns an encoder for requests sent to the TestService
+// create server.
+func EncodeCreateRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
 	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*testservice.WorkspaceUpdatePayload)
+		p, ok := v.(*types.FirstType)
 		if !ok {
-			return goahttp.ErrInvalidType("TestService", "update", "*testservice.WorkspaceUpdatePayload", v)
+			return goahttp.ErrInvalidType("TestService", "create", "*types.FirstType", v)
 		}
-		body := NewUpdateRequestBody(p)
+		body := NewCreateRequestBody(p)
 		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("TestService", "update", err)
+			return goahttp.ErrEncodingError("TestService", "create", err)
 		}
 		return nil
 	}
 }
 
-// DecodeUpdateResponse returns a decoder for responses returned by the
-// TestService update endpoint. restoreBody controls whether the response body
+// DecodeCreateResponse returns a decoder for responses returned by the
+// TestService create endpoint. restoreBody controls whether the response body
 // should be restored after having been read.
-func DecodeUpdateResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
+func DecodeCreateResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
 			b, err := io.ReadAll(resp.Body)
@@ -81,77 +71,33 @@ func DecodeUpdateResponse(decoder func(*http.Response) goahttp.Decoder, restoreB
 			return nil, nil
 		default:
 			body, _ := io.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("TestService", "update", resp.StatusCode, string(body))
+			return nil, goahttp.ErrInvalidResponse("TestService", "create", resp.StatusCode, string(body))
 		}
 	}
 }
 
-// BuildSetRequest instantiates a HTTP request object with method and path set
-// to call the "TestService" service "set" endpoint
-func (c *Client) BuildSetRequest(ctx context.Context, v interface{}) (*http.Request, error) {
-	var (
-		id string
-	)
-	{
-		p, ok := v.(*testservice.Workspace)
-		if !ok {
-			return nil, goahttp.ErrInvalidType("TestService", "set", "*testservice.Workspace", v)
-		}
-		if p.ID != nil {
-			id = *p.ID
-		}
-	}
-	u := &url.URL{Scheme: c.scheme, Host: c.host, Path: SetTestServicePath(id)}
-	req, err := http.NewRequest("PUT", u.String(), nil)
-	if err != nil {
-		return nil, goahttp.ErrInvalidURL("TestService", "set", u.String(), err)
-	}
-	if ctx != nil {
-		req = req.WithContext(ctx)
-	}
-
-	return req, nil
-}
-
-// EncodeSetRequest returns an encoder for requests sent to the TestService set
-// server.
-func EncodeSetRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Request, interface{}) error {
-	return func(req *http.Request, v interface{}) error {
-		p, ok := v.(*testservice.Workspace)
-		if !ok {
-			return goahttp.ErrInvalidType("TestService", "set", "*testservice.Workspace", v)
-		}
-		body := NewSetRequestBody(p)
-		if err := encoder(req).Encode(&body); err != nil {
-			return goahttp.ErrEncodingError("TestService", "set", err)
-		}
+// marshalTypesSecondTypeToSecondTypeRequestBody builds a value of type
+// *SecondTypeRequestBody from a value of type *types.SecondType.
+func marshalTypesSecondTypeToSecondTypeRequestBody(v *types.SecondType) *SecondTypeRequestBody {
+	if v == nil {
 		return nil
 	}
+	res := &SecondTypeRequestBody{
+		Description: v.Description,
+	}
+
+	return res
 }
 
-// DecodeSetResponse returns a decoder for responses returned by the
-// TestService set endpoint. restoreBody controls whether the response body
-// should be restored after having been read.
-func DecodeSetResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
-	return func(resp *http.Response) (interface{}, error) {
-		if restoreBody {
-			b, err := io.ReadAll(resp.Body)
-			if err != nil {
-				return nil, err
-			}
-			resp.Body = io.NopCloser(bytes.NewBuffer(b))
-			defer func() {
-				resp.Body = io.NopCloser(bytes.NewBuffer(b))
-			}()
-		} else {
-			defer resp.Body.Close()
-		}
-		switch resp.StatusCode {
-		case http.StatusNoContent:
-			return nil, nil
-		default:
-			body, _ := io.ReadAll(resp.Body)
-			return nil, goahttp.ErrInvalidResponse("TestService", "set", resp.StatusCode, string(body))
-		}
+// marshalSecondTypeRequestBodyToTypesSecondType builds a value of type
+// *types.SecondType from a value of type *SecondTypeRequestBody.
+func marshalSecondTypeRequestBodyToTypesSecondType(v *SecondTypeRequestBody) *types.SecondType {
+	if v == nil {
+		return nil
 	}
+	res := &types.SecondType{
+		Description: v.Description,
+	}
+
+	return res
 }

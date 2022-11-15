@@ -17,11 +17,8 @@ import (
 
 // Client lists the TestService service endpoint HTTP clients.
 type Client struct {
-	// Update Doer is the HTTP client used to make requests to the update endpoint.
-	UpdateDoer goahttp.Doer
-
-	// Set Doer is the HTTP client used to make requests to the set endpoint.
-	SetDoer goahttp.Doer
+	// Create Doer is the HTTP client used to make requests to the create endpoint.
+	CreateDoer goahttp.Doer
 
 	// RestoreResponseBody controls whether the response bodies are reset after
 	// decoding so they can be read again.
@@ -43,8 +40,7 @@ func NewClient(
 	restoreBody bool,
 ) *Client {
 	return &Client{
-		UpdateDoer:          doer,
-		SetDoer:             doer,
+		CreateDoer:          doer,
 		RestoreResponseBody: restoreBody,
 		scheme:              scheme,
 		host:                host,
@@ -53,15 +49,15 @@ func NewClient(
 	}
 }
 
-// Update returns an endpoint that makes HTTP requests to the TestService
-// service update server.
-func (c *Client) Update() goa.Endpoint {
+// Create returns an endpoint that makes HTTP requests to the TestService
+// service create server.
+func (c *Client) Create() goa.Endpoint {
 	var (
-		encodeRequest  = EncodeUpdateRequest(c.encoder)
-		decodeResponse = DecodeUpdateResponse(c.decoder, c.RestoreResponseBody)
+		encodeRequest  = EncodeCreateRequest(c.encoder)
+		decodeResponse = DecodeCreateResponse(c.decoder, c.RestoreResponseBody)
 	)
 	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildUpdateRequest(ctx, v)
+		req, err := c.BuildCreateRequest(ctx, v)
 		if err != nil {
 			return nil, err
 		}
@@ -69,33 +65,9 @@ func (c *Client) Update() goa.Endpoint {
 		if err != nil {
 			return nil, err
 		}
-		resp, err := c.UpdateDoer.Do(req)
+		resp, err := c.CreateDoer.Do(req)
 		if err != nil {
-			return nil, goahttp.ErrRequestError("TestService", "update", err)
-		}
-		return decodeResponse(resp)
-	}
-}
-
-// Set returns an endpoint that makes HTTP requests to the TestService service
-// set server.
-func (c *Client) Set() goa.Endpoint {
-	var (
-		encodeRequest  = EncodeSetRequest(c.encoder)
-		decodeResponse = DecodeSetResponse(c.decoder, c.RestoreResponseBody)
-	)
-	return func(ctx context.Context, v interface{}) (interface{}, error) {
-		req, err := c.BuildSetRequest(ctx, v)
-		if err != nil {
-			return nil, err
-		}
-		err = encodeRequest(req, v)
-		if err != nil {
-			return nil, err
-		}
-		resp, err := c.SetDoer.Do(req)
-		if err != nil {
-			return nil, goahttp.ErrRequestError("TestService", "set", err)
+			return nil, goahttp.ErrRequestError("TestService", "create", err)
 		}
 		return decodeResponse(resp)
 	}

@@ -11,67 +11,28 @@ import (
 	"encoding/json"
 	"fmt"
 
-	testservice "example.com/goa_issue/gen/test_service"
+	types "example.com/goa_issue/gen/types"
 )
 
-// BuildUpdatePayload builds the payload for the TestService update endpoint
+// BuildCreatePayload builds the payload for the TestService create endpoint
 // from CLI flags.
-func BuildUpdatePayload(testServiceUpdateBody string, testServiceUpdateID string) (*testservice.WorkspaceUpdatePayload, error) {
+func BuildCreatePayload(testServiceCreateBody string) (*types.FirstType, error) {
 	var err error
-	var body UpdateRequestBody
+	var body CreateRequestBody
 	{
-		err = json.Unmarshal([]byte(testServiceUpdateBody), &body)
+		err = json.Unmarshal([]byte(testServiceCreateBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Quibusdam eius.\",\n      \"destination_ids\": [\n         \"Eaque consectetur excepturi eaque.\",\n         \"Veritatis id iure.\"\n      ],\n      \"logo_url\": \"Accusantium culpa odit eaque.\",\n      \"name\": \"Quasi est eum ad.\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Similique rerum tempora quos totam quisquam voluptatibus.\",\n      \"id\": \"Tempora aut.\",\n      \"name\": \"Repudiandae perspiciatis est sint.\",\n      \"thing\": {\n         \"Description\": \"Cumque laudantium aliquid ea.\"\n      }\n   }'")
 		}
 	}
-	var id string
-	{
-		id = testServiceUpdateID
-	}
-	v := &testservice.WorkspaceUpdatePayload{
+	v := &types.FirstType{
+		ID:          body.ID,
 		Name:        body.Name,
 		Description: body.Description,
-		LogoURL:     body.LogoURL,
 	}
-	if body.DestinationIds != nil {
-		v.DestinationIds = make([]string, len(body.DestinationIds))
-		for i, val := range body.DestinationIds {
-			v.DestinationIds[i] = val
-		}
+	if body.Thing != nil {
+		v.Thing = marshalSecondTypeRequestBodyToTypesSecondType(body.Thing)
 	}
-	v.ID = id
-
-	return v, nil
-}
-
-// BuildSetPayload builds the payload for the TestService set endpoint from CLI
-// flags.
-func BuildSetPayload(testServiceSetBody string, testServiceSetID string) (*testservice.Workspace, error) {
-	var err error
-	var body SetRequestBody
-	{
-		err = json.Unmarshal([]byte(testServiceSetBody), &body)
-		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, \nerror: %s, \nexample of valid JSON:\n%s", err, "'{\n      \"description\": \"Mollitia et quis consectetur.\",\n      \"destination_ids\": [\n         \"Neque consequatur maiores aut.\",\n         \"Et consequatur quis dolorum corporis officiis rerum.\",\n         \"Quia dolores consequatur cum itaque.\",\n         \"Nam deserunt et tempora atque.\"\n      ],\n      \"logo_url\": \"Ea ut enim aut.\",\n      \"name\": \"Omnis velit laboriosam unde omnis incidunt.\"\n   }'")
-		}
-	}
-	var id string
-	{
-		id = testServiceSetID
-	}
-	v := &testservice.Workspace{
-		Name:        body.Name,
-		Description: body.Description,
-		LogoURL:     body.LogoURL,
-	}
-	if body.DestinationIds != nil {
-		v.DestinationIds = make([]string, len(body.DestinationIds))
-		for i, val := range body.DestinationIds {
-			v.DestinationIds[i] = val
-		}
-	}
-	v.ID = &id
 
 	return v, nil
 }
